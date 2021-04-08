@@ -1,4 +1,3 @@
-#![feature(str_split_once)]
 use logos::{Lexer, Logos};
 
 #[derive(Logos, Debug, PartialEq, Eq, Clone)]

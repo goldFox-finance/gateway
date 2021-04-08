@@ -9,9 +9,11 @@ use codec::{Decode, Encode};
 use gateway_crypto::public_key_bytes_to_eth_address;
 use our_std::{str::FromStr, Debuggable, Deserialize, RuntimeDebug, Serialize};
 
+use types_derive::{type_alias, Types};
+
 /// Type for representing the selection of a supported chain.
 #[derive(Serialize, Deserialize)] // used in config
-#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainId {
     Gate,
     Eth,
@@ -99,7 +101,7 @@ impl Default for ChainId {
 }
 
 /// Type for an account tied to a chain.
-#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainAccount {
     Gate(<Gateway as Chain>::Address),
     Eth(<Ethereum as Chain>::Address),
@@ -143,7 +145,7 @@ impl From<ChainAccount> for String {
 }
 
 /// Type for an asset tied to a chain.
-#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainAsset {
     Gate(<Gateway as Chain>::Address),
     Eth(<Ethereum as Chain>::Address),
@@ -187,7 +189,7 @@ impl From<ChainAsset> for String {
 }
 
 /// Type for a signature and account tied to a chain.
-#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainAccountSignature {
     Gate(<Gateway as Chain>::Address, <Gateway as Chain>::Signature),
     Eth(<Ethereum as Chain>::Address, <Ethereum as Chain>::Signature),
@@ -223,7 +225,7 @@ impl ChainAccountSignature {
 }
 
 /// Type for an hash tied to a chain.
-#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainHash {
     Gate(<Gateway as Chain>::Hash),
     Eth(<Ethereum as Chain>::Hash),
@@ -233,7 +235,7 @@ pub enum ChainHash {
 }
 
 /// Type for a signature tied to a chain.
-#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainSignature {
     Gate(<Gateway as Chain>::Signature),
     Eth(<Ethereum as Chain>::Signature),
@@ -262,7 +264,7 @@ impl ChainSignature {
 }
 
 /// Type for a list of chain signatures.
-#[derive(Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub enum ChainSignatureList {
     Gate(Vec<(<Gateway as Chain>::Address, <Gateway as Chain>::Signature)>),
     Eth(Vec<(<Ethereum as Chain>::Address, <Ethereum as Chain>::Signature)>),
@@ -287,14 +289,14 @@ impl FromStr for ChainId {
 pub trait Chain {
     const ID: ChainId;
 
-    type Address: Debuggable + Clone + Eq + Into<Vec<u8>> = [u8; 20];
-    type Amount: Debuggable + Clone + Eq + Into<AssetAmount> = u128;
-    type CashIndex: Debuggable + Clone + Eq + Into<CashIndex> = u128;
-    type Rate: Debuggable + Clone + Eq + Into<APR> = u128;
-    type Timestamp: Debuggable + Clone + Eq + Into<Timestamp> = u64;
-    type Hash: Debuggable + Clone + Eq = [u8; 32];
-    type PublicKey: Debuggable + Clone + Eq = [u8; 64];
-    type Signature: Debuggable + Clone + Eq = [u8; 65]; // secp256k1 sign
+    type Address: Debuggable + Clone + Eq + Into<Vec<u8>>;
+    type Amount: Debuggable + Clone + Eq + Into<AssetAmount>;
+    type CashIndex: Debuggable + Clone + Eq + Into<CashIndex>;
+    type Rate: Debuggable + Clone + Eq + Into<APR>;
+    type Timestamp: Debuggable + Clone + Eq + Into<Timestamp>;
+    type Hash: Debuggable + Clone + Eq;
+    type PublicKey: Debuggable + Clone + Eq;
+    type Signature: Debuggable + Clone + Eq;
     type EventId: Debuggable + Clone + Eq + Ord;
     type Event: Debuggable + Clone + Eq;
 
@@ -329,7 +331,34 @@ pub struct Tezos {}
 impl Chain for Gateway {
     const ID: ChainId = ChainId::Gate;
 
+    #[type_alias("Gateway__Chain__")]
+    type Address = [u8; 20];
+
+    #[type_alias("Gateway__Chain__")]
+    type Amount = u128;
+
+    #[type_alias("Gateway__Chain__")]
+    type CashIndex = u128;
+
+    #[type_alias("Gateway__Chain__")]
+    type Rate = u128;
+
+    #[type_alias("Gateway__Chain__")]
+    type Timestamp = u64;
+
+    #[type_alias("Gateway__Chain__")]
+    type Hash = [u8; 32];
+
+    #[type_alias("Gateway__Chain__")]
+    type PublicKey = [u8; 64];
+
+    #[type_alias("Gateway__Chain__")]
+    type Signature = [u8; 65];
+
+    #[type_alias("Gateway__Chain__")]
     type EventId = comp::EventId;
+
+    #[type_alias("Gateway__Chain__")]
     type Event = comp::Event;
 
     fn zero_hash() -> Self::Hash {
@@ -371,7 +400,34 @@ impl Chain for Gateway {
 impl Chain for Ethereum {
     const ID: ChainId = ChainId::Eth;
 
+    #[type_alias("Ethereum__Chain__")]
+    type Address = [u8; 20];
+
+    #[type_alias("Ethereum__Chain__")]
+    type Amount = u128;
+
+    #[type_alias("Ethereum__Chain__")]
+    type CashIndex = u128;
+
+    #[type_alias("Ethereum__Chain__")]
+    type Rate = u128;
+
+    #[type_alias("Ethereum__Chain__")]
+    type Timestamp = u64;
+
+    #[type_alias("Ethereum__Chain__")]
+    type Hash = [u8; 32];
+
+    #[type_alias("Ethereum__Chain__")]
+    type PublicKey = [u8; 64];
+
+    #[type_alias("Ethereum__Chain__")]
+    type Signature = [u8; 65];
+
+    #[type_alias("Ethereum__Chain__")]
     type EventId = eth::EventId;
+
+    #[type_alias("Ethereum__Chain__")]
     type Event = eth::Event;
 
     fn zero_hash() -> Self::Hash {
@@ -437,7 +493,34 @@ impl Chain for Ethereum {
 impl Chain for Polkadot {
     const ID: ChainId = ChainId::Dot;
 
+    #[type_alias("Polkadot__Chain__")]
+    type Address = [u8; 20];
+
+    #[type_alias("Polkadot__Chain__")]
+    type Amount = u128;
+
+    #[type_alias("Polkadot__Chain__")]
+    type CashIndex = u128;
+
+    #[type_alias("Polkadot__Chain__")]
+    type Rate = u128;
+
+    #[type_alias("Polkadot__Chain__")]
+    type Timestamp = u64;
+
+    #[type_alias("Polkadot__Chain__")]
+    type Hash = [u8; 32];
+
+    #[type_alias("Polkadot__Chain__")]
+    type PublicKey = [u8; 64];
+
+    #[type_alias("Polkadot__Chain__")]
+    type Signature = [u8; 65];
+
+    #[type_alias("Polkadot__Chain__")]
     type EventId = dot::EventId;
+
+    #[type_alias("Polkadot__Chain__")]
     type Event = dot::Event;
 
     fn zero_hash() -> Self::Hash {
@@ -479,7 +562,34 @@ impl Chain for Polkadot {
 impl Chain for Solana {
     const ID: ChainId = ChainId::Sol;
 
+    #[type_alias("Solana__Chain__")]
+    type Address = [u8; 20];
+
+    #[type_alias("Solana__Chain__")]
+    type Amount = u128;
+
+    #[type_alias("Solana__Chain__")]
+    type CashIndex = u128;
+
+    #[type_alias("Solana__Chain__")]
+    type Rate = u128;
+
+    #[type_alias("Solana__Chain__")]
+    type Timestamp = u64;
+
+    #[type_alias("Solana__Chain__")]
+    type Hash = [u8; 32];
+
+    #[type_alias("Solana__Chain__")]
+    type PublicKey = [u8; 64];
+
+    #[type_alias("Solana__Chain__")]
+    type Signature = [u8; 65];
+
+    #[type_alias("Solana__Chain__")]
     type EventId = sol::EventId;
+
+    #[type_alias("Solana__Chain__")]
     type Event = sol::Event;
 
     fn zero_hash() -> Self::Hash {
@@ -521,7 +631,34 @@ impl Chain for Solana {
 impl Chain for Tezos {
     const ID: ChainId = ChainId::Tez;
 
+    #[type_alias("Tezos__Chain__")]
+    type Address = [u8; 20];
+
+    #[type_alias("Tezos__Chain__")]
+    type Amount = u128;
+
+    #[type_alias("Tezos__Chain__")]
+    type CashIndex = u128;
+
+    #[type_alias("Tezos__Chain__")]
+    type Rate = u128;
+
+    #[type_alias("Tezos__Chain__")]
+    type Timestamp = u64;
+
+    #[type_alias("Tezos__Chain__")]
+    type Hash = [u8; 32];
+
+    #[type_alias("Tezos__Chain__")]
+    type PublicKey = [u8; 64];
+
+    #[type_alias("Tezos__Chain__")]
+    type Signature = [u8; 65];
+
+    #[type_alias("Tezos__Chain__")]
     type EventId = tez::EventId;
+
+    #[type_alias("Tezos__Chain__")]
     type Event = tez::Event;
 
     fn zero_hash() -> Self::Hash {
@@ -568,6 +705,9 @@ pub mod comp {
     use codec::{Decode, Encode};
     use our_std::RuntimeDebug;
 
+    use types_derive::type_alias;
+
+    #[type_alias("comp__")]
     pub type EventId = (u64, u64); // XXX
 
     #[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
@@ -582,14 +722,20 @@ pub mod eth {
     use codec::{Decode, Encode};
     use our_std::RuntimeDebug;
 
+    use types_derive::type_alias;
+
     #[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
     pub enum RecoveryError {
         SignatureRecoveryError,
     }
 
+    #[type_alias("eth__")]
     pub type BlockNumber = u64;
+
+    #[type_alias("eth__")]
     pub type LogIndex = u64;
 
+    #[type_alias("eth__")]
     pub type EventId = (BlockNumber, LogIndex);
 
     #[derive(Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
@@ -623,6 +769,9 @@ pub mod dot {
     use codec::{Decode, Encode};
     use our_std::RuntimeDebug;
 
+    use types_derive::type_alias;
+
+    #[type_alias("dot__")]
     pub type EventId = (u64, u64);
 
     #[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
@@ -633,6 +782,9 @@ pub mod sol {
     use codec::{Decode, Encode};
     use our_std::RuntimeDebug;
 
+    use types_derive::type_alias;
+
+    #[type_alias("sol__")]
     pub type EventId = (u64, u64);
 
     #[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
@@ -643,6 +795,9 @@ pub mod tez {
     use codec::{Decode, Encode};
     use our_std::RuntimeDebug;
 
+    use types_derive::type_alias;
+
+    #[type_alias("tez__")]
     pub type EventId = (u128, u128);
 
     #[derive(Copy, Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]

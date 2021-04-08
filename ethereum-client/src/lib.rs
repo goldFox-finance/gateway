@@ -13,6 +13,8 @@ use our_std::RuntimeDebug;
 use serde::Deserialize;
 use sp_runtime::offchain::{http, Duration};
 
+use types_derive::Types;
+
 #[derive(Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
 pub enum EthereumClientError {
     HttpIoError,
@@ -77,7 +79,7 @@ fn deserialize_get_block_number_response(
     serde_json::from_str(response)
 }
 
-#[derive(Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug)]
+#[derive(Clone, Eq, PartialEq, Encode, Decode, RuntimeDebug, Types)]
 pub struct EthereumLogEvent {
     pub block_hash: [u8; 32],
     pub block_number: u64,

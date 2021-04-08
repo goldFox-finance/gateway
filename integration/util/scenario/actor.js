@@ -68,7 +68,7 @@ class Actor {
     let [sig, currentNonce] = await this.signWithNonce(trxReq);
     let call = this.ctx.api().tx.cash.execTrxRequest(trxReq, sig, currentNonce);
 
-    return await sendAndWaitForEvents(call, this.ctx.api(), { onFinalize: false });
+    return await this.ctx.eventTracker.sendAndWaitForEvents(call, { onFinalize: false });
   }
 
   async ethBalance() {
@@ -140,7 +140,6 @@ class Actor {
     // TODO: Use non-zero balances
     let cashForTokens = await Promise.all(this.ctx.tokens.all().map((token) => this.cashForToken(token)));
     let chainCashBalance = await this.chainCashBalance();
-    console.log({cashForTokens, chainCashBalance});
     return chainCashBalance + cashForTokens.reduce((acc, el) => acc + el, 0);
   }
 
@@ -148,7 +147,6 @@ class Actor {
     let assetBalance = await this.ctx.api().query.cash.assetBalances(token.toChainAsset(), this.toChainAccount());
     let price = await token.getPrice();
     let liquidityFactor = await token.getLiquidityFactor();
-    console.log({token: token.symbol, assetBalance, price, liquidityFactor});
 
     if (assetBalance == 0) {
       return 0;
@@ -164,7 +162,6 @@ class Actor {
   async liquidity() {
     // TODO: Use non-zero balances
     let liquidityForTokens = await Promise.all(this.ctx.tokens.all().map((token) => this.liquidityForToken(token)));
-    console.log({liquidityForTokens});
     return await this.cash() + liquidityForTokens.reduce((acc, el) => acc + el, 0);
   }
 

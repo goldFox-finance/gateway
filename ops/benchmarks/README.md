@@ -5,7 +5,10 @@
 * terraform apply -var "do_token=${DO_PAT}" 
     * will return the instance ip
 * ssh root@{IP_ADDR}
-* git clone https://github.com/compound-finance/gateway.git
-* cd gateway
-* ./scripts/get_substrate.sh
-* ./scripts/benchmark.sh
+    * git clone https://github.com/compound-finance/gateway.git
+    * cd gateway
+    * ./scripts/get_substrate.sh
+    * source ~/.cargo/env
+    * ./scripts/benchmark.sh
+* sftp root@{IP_ADDR}
+    * put pallets/cash/src/lib.rs

@@ -11,4 +11,4 @@
     * source ~/.cargo/env
     * ./scripts/benchmark.sh
 * sftp root@{IP_ADDR}
-    * put pallets/cash/src/lib.rs
+    * get gateway/pallets/cash/src/lib.rs

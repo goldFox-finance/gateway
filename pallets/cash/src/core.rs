@@ -20,7 +20,7 @@ use frame_support::{
 use pallet_oracle::types::Price;
 
 use crate::{
-    chains::{ChainAccount, ChainAsset, ChainHash, ChainId},
+    chains::{Chain, ChainAccount, ChainAsset, ChainHash, ChainId, Ethereum},
     events::ChainLogEvent,
     factor::Factor,
     internal, log,
@@ -31,12 +31,13 @@ use crate::{
     types::{
         AssetAmount, AssetBalance, AssetIndex, AssetInfo, AssetQuantity, Balance, CashIndex,
         CashPrincipal, CashPrincipalAmount, CashQuantity, GovernanceResult, NoticeId, Quantity,
-        Timestamp, USDQuantity, Units, ValidatorIdentity, CASH,
+        Timestamp, USDQuantity, Units, ValidatorIdentity, ValidatorSig, CASH,
     },
     AssetBalances, AssetsWithNonZeroBalance, BorrowIndices, CashPrincipals, CashYield,
     CashYieldNext, ChainCashPrincipals, Config, Event, GlobalCashIndex, LastBlockTimestamp,
     LastIndices, LastMinerSharePrincipal, LastYieldCashIndex, LastYieldTimestamp, Miner, Module,
     SupplyIndices, SupportedAssets, TotalBorrowAssets, TotalCashPrincipal, TotalSupplyAssets,
+    Validators,
 };
 
 #[macro_export]
@@ -130,6 +131,19 @@ pub fn get_account_balance<T: Config>(
 /// Return the current cash yield.
 pub fn get_cash_yield<T: Config>() -> Result<APR, Reason> {
     Ok(CashYield::get())
+}
+
+/// Return the validator which signed the given data, given signature.
+pub fn recover_validator<T: Config>(
+    data: &[u8],
+    signature: ValidatorSig,
+) -> Result<ValidatorIdentity, Reason> {
+    let signer = <Ethereum as Chain>::recover_address(data, signature)?;
+    let validators: BTreeSet<_> = Validators::iter().map(|v| v.1.eth_address).collect();
+    if !validators.contains(&signer) {
+        return Err(Reason::UnknownValidator);
+    }
+    Ok(signer)
 }
 
 // Internal helpers

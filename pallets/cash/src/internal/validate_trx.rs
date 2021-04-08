@@ -129,6 +129,8 @@ pub fn validate_unsigned<T: Config>(
                 Err(ValidationError::InvalidValidator)
             }
         }
+
+        _ => Err(ValidationError::InvalidCall),
     }
 }
 

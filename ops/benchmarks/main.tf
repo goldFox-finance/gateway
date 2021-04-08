@@ -1,3 +1,22 @@
+terraform {
+  required_providers {
+    digitalocean = {
+      source = "digitalocean/digitalocean"
+      version = "1.22.2"
+    }
+  }
+}
+
+variable "do_token" {}
+
+provider "digitalocean" {
+  token = var.do_token
+}
+
+data "digitalocean_ssh_key" "benchmark-ssh" {
+  name = "benchmark-ssh"
+}
+
 resource "digitalocean_droplet" "www-1" {
   image = "ubuntu-18-04-x64"
   name = "www-1"
